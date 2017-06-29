@@ -9,16 +9,17 @@ import time
 import MySQLdb as mdb 
 import datetime
 
-databaseUsername="YOUR USERNAME, USUALLY ROOT"
-databasePassword="YOUR PASSWORD!" 
-databaseName="WordpressDB" #do not change unless you named the Wordpress database with some other name
+databaseHost="localhost"
+databaseUsername="DBUSERNAME"
+databasePassword="PASSWORD"
+databaseName="DBNAME"
 
 sensor=Adafruit_DHT.DHT22 #if not using DHT22, replace with Adafruit_DHT.DHT11 or Adafruit_DHT.AM2302
 pinNum=4 #if not using pin number 4, change here
 
 def saveToDatabase(temperature,humidity):
 
-	con=mdb.connect("localhost", databaseUsername, databasePassword, databaseName)
+	con=mdb.connect(databaseHost, databaseUsername, databasePassword, databaseName)
         currentDate=datetime.datetime.now().date()
 
         now=datetime.datetime.now()
@@ -29,7 +30,7 @@ def saveToDatabase(temperature,humidity):
         with con:
                 cur=con.cursor()
 		
-                cur.execute("INSERT INTO temperatures (temperature,humidity, dateMeasured, hourMeasured) VALUES (%s,%s,%s,%s)",(temperature,humidity,currentDate, minutes))
+                cur.execute("INSERT INTO kinderkamer (temperature,humidity, dateMeasured, hourMeasured) VALUES (%s,%s,%s,%s)",(temperature,humidity,currentDate, minutes))
 
 		print "Saved temperature"
 		return "true"
@@ -53,7 +54,7 @@ def readInfo():
 try:
 	queryFile=file("createTable.sql","r")
 
-	con=mdb.connect("localhost", databaseUsername,databasePassword,databaseName)
+	con=mdb.connect(databaseHost, databaseUsername,databasePassword,databaseName)
         currentDate=datetime.datetime.now().date()
 
         with con:
